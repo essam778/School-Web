@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - النظام المدرسي الإلكتروني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .login-container {
+            background: #fff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,.3);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.5s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        .login-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .login-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .login-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        .login-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+            transition: all 0.3s;
+        }
+
+        .logo-circle:hover {
+            transform: scale(1.05) rotate(5deg);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .logo-circle i {
+            font-size: 40px;
+            color: #fff;
+        }
+
+        .login-header h1 {
+            font-size: 26px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            font-size: 15px;
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .form-group:focus-within label {
+            color: #667eea;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #95a5a6;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .input-wrapper:focus-within .input-icon {
+            color: #667eea;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border-radius: 12px;
+            border: 2px solid #e1e5ee;
+            font-size: 15px;
+            transition: all 0.3s;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 14px 45px 14px 15px;
+            border-radius: 12px;
+            border: 2px solid #e1e5ee;
+            font-size: 15px;
+            transition: all 0.3s;
+            direction: rtl;
+            text-align: right;
+            background: white;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group select:hover,
+        .form-group input:hover {
+            border-color: #b8c3e6;
+        }
+
+        .form-group input:focus + .input-icon {
+            color: #667eea;
+        }
+
+        .password-toggle {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #95a5a6;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .remember-me:hover {
+            opacity: 0.8;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .remember-me label {
+            font-size: 14px;
+            color: #5a6c7d;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .forgot-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s;
+        }
+
+        .forgot-link:hover::after {
+            width: 100%;
+        }
+
+        .forgot-link:hover {
+            color: #764ba2;
+        }
+
+        .forgot-link:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .error-message {
+            display: none;
+            background: #fee;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5ee;
+        }
+
+        .login-footer p {
+            font-size: 13px;
+            color: #95a5a6;
+        }
+
+        .helper-text {
+            background: #f8f9fa;
+            border-right: 3px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #5a6c7d;
+            line-height: 1.6;
+        }
+
+        .helper-text strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .helper-text ul {
+            margin: 10px 0;
+            padding-right: 20px;
+        }
+
+        .helper-text li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 25px;
+                max-width: 100%;
+            }
+
+            .login-header h1 {
+                font-size: 22px;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            
+            .form-group select,
+            .form-group input {
+                font-size: 14px;
+            }
+            
+            .helper-text {
+                font-size: 12px;
+                padding: 12px;
+            }
+            
+            .helper-text ul {
+                padding-right: 15px;
+            }
+        }
+
+        @media (min-width: 481px) and (max-width: 768px) {
+            .login-container {
+                max-width: 500px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .login-container {
+                max-width: 480px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .login-container {
+                padding: 30px;
+                max-height: 95vh;
+            }
+            
+            .logo-circle {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 15px;
+            }
+            
+            .logo-circle i {
+                font-size: 30px;
+            }
+            
+            .login-header {
+                margin-bottom: 25px;
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="logo-circle">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h1>النظام المدرسي الإلكتروني</h1>
+            <p>تسجيل الدخول إلى حسابك</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="role">نوع الحساب</label>
+                <div class="input-wrapper">
+                    <select id="role" required>
+                        <option value="">اختر نوع الحساب...</option>
+                        <option value="student">🎓 طالب</option>
+                        <option value="teacher">👨‍🏫 معلم</option>
+                        <option value="manager">📈 مدير مدرسة</option>
+                        <option value="admin">🔑 مدير نظام</option>
+                    </select>
+                    <i class="fas fa-user-tag input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="example@school.com"
+                        required
+                        autocomplete="email"
+                    >
+                    <i class="fas fa-envelope input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="••••••••"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <i class="fas fa-lock input-icon"></i>
+                    <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                </div>
+            </div>
+
+            <div class="remember-forgot">
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <label for="rememberMe">تذكرني</label>
+                </div>
+                <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span>تسجيل الدخول</span>
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text">جاري تسجيل الدخول...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="login-footer">
+            <p>© 2024 النظام المدرسي الإلكتروني - جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>
