@@ -301,11 +301,11 @@
             width: 100%;
             border-collapse: collapse;
         }
-
+                
         thead {
             background: #f8f9fa;
         }
-
+                
         th {
             padding: 15px 20px;
             text-align: right;
@@ -313,19 +313,47 @@
             color: #2c3e50;
             font-size: 14px;
         }
-
+                
         tbody tr {
             border-bottom: 1px solid #e1e8ed;
             transition: background 0.2s;
         }
-
+                
         tbody tr:hover {
             background: #f8f9fa;
         }
-
+                
         td {
             padding: 15px 20px;
             color: #5a6c7d;
+        }
+                
+        /* Scrolling for tables */
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+                
+        .table-container table {
+            margin-bottom: 0;
+        }
+                
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+                
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+                
+        .table-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+                
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
         }
 
         .status-badge {
@@ -417,6 +445,34 @@
         }
 
         /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .welcome-section h2 {
+                font-size: 24px;
+            }
+            
+            .welcome-section p {
+                font-size: 14px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -437,18 +493,758 @@
             }
 
             table {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             th, td {
-                padding: 10px;
+                padding: 8px 10px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+                gap: 15px;
+            }
+            
+            .stat-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+            
+            .stat-info .number {
+                font-size: 28px;
+            }
+            
+            .action-btn {
+                padding: 20px 15px;
+            }
+            
+            .action-btn i {
+                font-size: 32px;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stat-info {
+                text-align: center;
+            }
+            
+            .table-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .icon-btn {
+                padding: 8px;
+            }
+            
+            .user-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .logout-btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .navbar-brand h1 {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
+            
+            .stat-info .number {
+                font-size: 24px;
+            }
+            
+            .action-btn h3 {
+                font-size: 14px;
+            }
+            
+            .action-btn p {
+                font-size: 12px;
             }
         }
     </style>
     <script type="module" src="js/dashboardGuard.js"></script>
+    
+    <!-- Modals -->
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .modal-body {
+            padding: 25px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .modal-footer {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        /* Attendance Log Table */
+        .attendance-log-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        
+        .attendance-log-header h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        
+        .attendance-log-header p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .attendance-log-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+        }
+        
+        .attendance-log-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .attendance-log-table th {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            text-align: right;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        
+        .attendance-log-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e8ed;
+            color: #5a6c7d;
+        }
+        
+        .attendance-log-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .attendance-log-table tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-present {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-absent {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-late {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        /* Class Details Modal */
+        .class-details-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+        
+        .class-summary {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1e8ed;
+        }
+        
+        .class-summary h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .detail-row strong {
+            color: #2c3e50;
+            min-width: 100px;
+        }
+        
+        .detail-row span {
+            color: #5a6c7d;
+            text-align: left;
+        }
+        
+        .class-teachers {
+            margin-bottom: 25px;
+        }
+        
+        .class-teachers h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .teachers-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .teachers-list li {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            border-right: 3px solid #3498db;
+        }
+        
+        .no-teachers {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .class-students h4 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        .students-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .students-list li {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            margin-bottom: 5px;
+            border-radius: 6px;
+            border-right: 3px solid #27ae60;
+        }
+        
+        .no-students {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        /* Scrollable Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            height: calc(100vh - 120px);
+            overflow: auto;
+        }
+        
+        /* Responsive Design for Modals */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+            
+            .modal-body {
+                padding: 20px;
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-control {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .modal-footer {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                padding: 12px;
+            }
+            
+            /* Attendance Log Table on Mobile */
+            .attendance-log-table {
+                font-size: 13px;
+            }
+            
+            .attendance-log-table th,
+            .attendance-log-table td {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 98%;
+                margin: 2% auto;
+            }
+            
+            .modal-header {
+                padding: 15px 20px;
+            }
+            
+            .modal-title {
+                font-size: 18px;
+            }
+            
+            .attendance-log-table-container {
+                max-height: 300px;
+            }
+        }
+        
+        /* Scrollbar styling */
+        .container::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        .container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        
+        .container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 5px;
+        }
+        
+        .container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        /* Sidebar Navigation */
+        .hamburger-menu {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.3s;
+        }
+        
+        .hamburger-menu:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            z-index: 1002;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            direction: rtl;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+        
+        .sidebar-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar-menu::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        
+        .sidebar-menu::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-right: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            border-right-color: #3498db;
+        }
+        
+        .sidebar-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .sidebar-menu span {
+            font-size: 16px;
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            display: none;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        /* Responsive Sidebar */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+                left: -280px;
+            }
+            
+            .hamburger-menu {
+                left: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>القائمة</h3>
+            <button class="close-btn" onclick="closeSidebar()">&times;</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#" onclick="scrollToSection('welcomeSection'); closeSidebar();">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="scrollToSection('teachersTable'); closeSidebar();">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>المدرسين</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="scrollToSection('classesTable'); closeSidebar();">
+                    <i class="fas fa-school"></i>
+                    <span>الفصول</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showTeacherAttendance(); closeSidebar();">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>الحضور</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="viewTeacherAttendance(); closeSidebar();">
+                    <i class="fas fa-history"></i>
+                    <span>سجل الحضور</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showAssignTeacherToClassModal(); closeSidebar();">
+                    <i class="fas fa-user-plus"></i>
+                    <span>تعيين المدرسين</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showAddTeacherModal(); closeSidebar();">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>إضافة مدرس</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="showAddClassModal(); closeSidebar();">
+                    <i class="fas fa-door-open"></i>
+                    <span>إضافة فصل</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="logoutUser(); closeSidebar();">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل خروج</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
     <nav class="navbar">
+        <!-- Hamburger Menu Icon -->
+        <div class="hamburger-menu" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        
         <div class="navbar-brand">
             <i class="fas fa-user-shield"></i>
             <div>
@@ -462,17 +1258,13 @@
                 <h3 id="userName">المدير</h3>
                 <p>مدير النظام</p>
             </div>
-            <button class="logout-btn" onclick="logoutUser()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>خروج</span>
-            </button>
         </div>
     </nav>
 
     <div class="container">
         <div class="welcome-section">
             <h2>مرحباً، <span id="welcomeName">المدير</span> 👋</h2>
-            <p>إليك نظرة سريعة على إحصائيات النظام المدرسي</p>
+            <p id="currentDateTime">جاري تحميل التاريخ والوقت...</p>
         </div>
 
         <div class="stats-grid">
@@ -514,6 +1306,18 @@
                 <h3>إنشاء فصل</h3>
                 <p>فصل دراسي جديد</p>
             </div>
+
+            <div class="action-btn" onclick="showTeacherAttendance()">
+                <i class="fas fa-calendar-check"></i>
+                <h3>تسجيل حضور المدرسين</h3>
+                <p>تسجيل حضور المدرسين</p>
+            </div>
+
+            <div class="action-btn" onclick="viewTeacherAttendance()">
+                <i class="fas fa-history"></i>
+                <h3>سجل الحضور</h3>
+                <p>عرض سجل حضور المدرسين</p>
+            </div>
         </div>
 
         <h2 class="section-title" id="teachersTable">
@@ -551,6 +1355,230 @@
                 <div class="loading">
                     <div class="spinner"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Teacher Modal -->
+    <div id="addTeacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة معلم جديد</h3>
+                <button class="close-btn" onclick="closeModal('addTeacherModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="teacherFullName">الاسم الكامل</label>
+                    <input type="text" id="teacherFullName" class="form-control" placeholder="أدخل الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="teacherEmail">البريد الإلكتروني</label>
+                    <input type="email" id="teacherEmail" class="form-control" placeholder="أدخل البريد الإلكتروني">
+                </div>
+                <div class="form-group">
+                    <label for="teacherSubject">المادة</label>
+                    <input type="text" id="teacherSubject" class="form-control" placeholder="أدخل المادة التي يدرّسها">
+                </div>
+                <div class="form-group">
+                    <label for="teacherPassword">كلمة المرور</label>
+                    <input type="password" id="teacherPassword" class="form-control" placeholder="أدخل كلمة المرور" value="123456">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addTeacherModal')">إلغاء</button>
+                <button class="btn btn-primary" onclick="addTeacherFromModal()">إضافة المعلم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Teacher Modal -->
+    <div id="editTeacherModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">تعديل بيانات المعلم</h3>
+                <button class="close-btn" onclick="closeModal('editTeacherModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editTeacherId">
+                <div class="form-group">
+                    <label for="editTeacherFullName">الاسم الكامل</label>
+                    <input type="text" id="editTeacherFullName" class="form-control" placeholder="أدخل الاسم الكامل">
+                </div>
+                <div class="form-group">
+                    <label for="editTeacherSubject">المادة</label>
+                    <input type="text" id="editTeacherSubject" class="form-control" placeholder="أدخل المادة التي يدرّسها">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editTeacherModal')">إلغاء</button>
+                <button class="btn btn-primary" onclick="updateTeacherFromModal()">تحديث المعلم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Class Modal -->
+    <div id="addClassModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إنشاء فصل جديد</h3>
+                <button class="close-btn" onclick="closeModal('addClassModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="className">اسم الفصل</label>
+                    <input type="text" id="className" class="form-control" placeholder="أدخل اسم الفصل (مثل: الصف الأول أ)">
+                </div>
+                <div class="form-group">
+                    <label for="classGrade">المرحلة</label>
+                    <input type="text" id="classGrade" class="form-control" placeholder="أدخل المرحلة (مثل: الصف الأول)">
+                </div>
+                <div class="form-group">
+                    <label for="classCapacity">سعة الفصل</label>
+                    <input type="number" id="classCapacity" class="form-control" placeholder="أدخل سعة الفصل" value="30">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addClassModal')">إلغاء</button>
+                <button class="btn btn-primary" onclick="addClassFromModal()">إنشاء الفصل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Class Modal -->
+    <div id="editClassModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">تعديل بيانات الفصل</h3>
+                <button class="close-btn" onclick="closeModal('editClassModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editClassId">
+                <div class="form-group">
+                    <label for="editClassName">اسم الفصل</label>
+                    <input type="text" id="editClassName" class="form-control" placeholder="أدخل اسم الفصل">
+                </div>
+                <div class="form-group">
+                    <label for="editClassGrade">المرحلة</label>
+                    <input type="text" id="editClassGrade" class="form-control" placeholder="أدخل المرحلة">
+                </div>
+                <div class="form-group">
+                    <label for="editClassCapacity">سعة الفصل</label>
+                    <input type="number" id="editClassCapacity" class="form-control" placeholder="أدخل سعة الفصل">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('editClassModal')">إلغاء</button>
+                <button class="btn btn-primary" onclick="updateClassFromModal()">تحديث الفصل</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Attendance Modal -->
+    <div id="teacherAttendanceModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">تسجيل حضور المعلم</h3>
+                <button class="close-btn" onclick="closeModal('teacherAttendanceModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="attendanceTeacherSelect">اختر المعلم</label>
+                    <select id="attendanceTeacherSelect" class="form-control">
+                        <option value="">جارٍ تحميل المعلمين...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceDate">التاريخ</label>
+                    <input type="date" id="attendanceDate" class="form-control" value="">
+                </div>
+                <div class="form-group">
+                    <label for="attendanceStatus">حالة الحضور</label>
+                    <select id="attendanceStatus" class="form-control">
+                        <option value="present">حاضر</option>
+                        <option value="absent">غائب</option>
+                        <option value="late">متأخر</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('teacherAttendanceModal')">إلغاء</button>
+                <button class="btn btn-primary" onclick="recordTeacherAttendanceFromModal()">تسجيل الحضور</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Teacher Attendance Log Modal -->
+    <div id="viewAttendanceLogModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">سجل حضور المعلم</h3>
+                <button class="close-btn" onclick="closeModal('viewAttendanceLogModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="logTeacherSelect">اختر المعلم</label>
+                    <select id="logTeacherSelect" class="form-control" onchange="loadAttendanceLog()">
+                        <option value="">جارٍ تحميل المعلمين...</option>
+                    </select>
+                </div>
+                <div id="attendanceLogContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>جارٍ تحميل سجل الحضور...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewAttendanceLogModal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Teacher to Class Modal -->
+    <div id="assignTeacherModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">تعيين المعلم لفصل</h3>
+                <button class="close-btn" onclick="closeModal('assignTeacherModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="assignTeacherSelect">المعلم</label>
+                    <select id="assignTeacherSelect" class="form-control">
+                        <option value="">جارٍ تحميل المعلمين...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignClassSelect">اختر الفصل</label>
+                    <select id="assignClassSelect" class="form-control">
+                        <option value="">جارٍ تحميل الفصول...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('assignTeacherModal')">إلغاء</button>
+                <button class="btn btn-primary" onclick="assignTeacherToClassFromModal()">تعيين المعلم</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Class Details Modal -->
+    <div id="viewClassDetailsModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 class="modal-title">تفاصيل الفصل</h3>
+                <button class="close-btn" onclick="closeModal('viewClassDetailsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="classDetailsContent">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p>جارٍ تحميل تفاصيل الفصل...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewClassDetailsModal')">إغلاق</button>
             </div>
         </div>
     </div>

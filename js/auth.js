@@ -40,10 +40,15 @@ async function handleLogin(e) {
     
     if (isProcessing) return;
     
-    const role = document.getElementById('role')?.value;
-    const email = document.getElementById('email')?.value.trim();
-    const password = document.getElementById('password')?.value;
-    const rememberMe = document.getElementById('rememberMe')?.checked;
+    const roleElement = document.getElementById('role');
+    const emailElement = document.getElementById('email');
+    const passwordElement = document.getElementById('password');
+    const rememberMeElement = document.getElementById('rememberMe');
+    
+    const role = roleElement ? roleElement.value : null;
+    const email = emailElement ? emailElement.value.trim() : null;
+    const password = passwordElement ? passwordElement.value : null;
+    const rememberMe = rememberMeElement ? rememberMeElement.checked : false;
     
     // التحقق الأساسي
     if (!role) {
@@ -108,7 +113,8 @@ async function handleLogin(e) {
             uid: userDoc.id,
             email: userData.email,
             fullName: userData.fullName,
-            role: userData.role
+            role: userData.role,
+            timestamp: Date.now()
         }));
         
         // 6. تحديث وقت الدخول الأخير

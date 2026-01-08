@@ -265,6 +265,119 @@
             color: #2980b9;
         }
 
+        /* Weekly Schedule Styles */
+        .schedule-section {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+
+        .schedule-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 25px;
+        }
+
+        .schedule-header h3 {
+            font-size: 20px;
+        }
+
+        .schedule-container {
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .week-schedule {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            min-width: 750px;
+        }
+
+        .day-row {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 100px;
+        }
+
+        .day-row.holiday {
+            background: #ffebee;
+            opacity: 0.7;
+        }
+
+        .day-name {
+            text-align: center;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-right: 15px;
+            min-width: 100px;
+            padding: 8px;
+            border-radius: 5px;
+            background: white;
+        }
+
+        .day-name.holiday {
+            color: #e74c3c;
+            background: #ffebee;
+        }
+
+        .day-sessions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .session-card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-right: 3px solid var(--session-color);
+            transition: transform 0.2s;
+            min-width: 180px;
+        }
+
+        .session-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .session-card.morning { --session-color: #3498db; }
+        .session-card.afternoon { --session-color: #27ae60; }
+        .session-card.evening { --session-color: #f39c12; }
+
+        .session-time {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .session-subject {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .session-teacher {
+            font-size: 12px;
+            color: #3498db;
+        }
+
+        .holiday-indicator {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            font-weight: 600;
+            font-style: italic;
+        }
+
         .assignments-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -508,6 +621,31 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .assignments-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            
+            .week-schedule {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
+        }
+
+        @media (max-width: 992px) {
+            .week-schedule {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            }
+            
+            .day-column {
+                min-width: 130px;
+            }
+        }
+
         @media (max-width: 768px) {
             .navbar {
                 flex-direction: column;
@@ -520,7 +658,7 @@
             }
 
             .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
 
             .student-details {
@@ -538,18 +676,323 @@
             th, td {
                 padding: 10px;
             }
+            
+            .week-schedule {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            .day-column {
+                min-width: 120px;
+                padding: 10px;
+            }
+            
+            .session-card {
+                padding: 10px;
+            }
+            
+            .session-time {
+                font-size: 11px;
+            }
+            
+            .session-subject {
+                font-size: 13px;
+            }
+            
+            .session-teacher {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .week-schedule {
+                gap: 10px;
+                min-width: 600px;
+            }
+            
+            .day-row {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px;
+            }
+            
+            .day-name {
+                margin-right: 0;
+                margin-bottom: 10px;
+                min-width: auto;
+            }
+            
+            .session-card {
+                padding: 10px;
+                min-width: 100%;
+            }
+            
+            .session-time {
+                font-size: 10px;
+            }
+            
+            .session-subject {
+                font-size: 12px;
+            }
+            
+            .session-teacher {
+                font-size: 10px;
+            }
         }
 
         @media (max-width: 480px) {
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .week-schedule {
+                gap: 8px;
+                min-width: 400px;
+            }
+            
+            .day-row {
+                padding: 8px;
+            }
+            
+            .day-name {
+                padding: 6px;
+                font-size: 11px;
+            }
+            
+            .session-card {
+                padding: 8px;
+                min-width: 100%;
+            }
+            
+            .session-time {
+                font-size: 9px;
+            }
+            
+            .session-subject {
+                font-size: 11px;
+            }
+            
+            .session-teacher {
+                font-size: 9px;
+            }
+        }
+        
+        /* Sidebar Navigation */
+        .hamburger-menu {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.3s;
+        }
+        
+        .hamburger-menu:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            z-index: 1002;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            direction: rtl;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
+        }
+        
+        .sidebar-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar-menu::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+        }
+        
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+        
+        .sidebar-menu::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: background 0.3s;
+            border-right: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            border-right-color: #3498db;
+        }
+        
+        .sidebar-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .sidebar-menu span {
+            font-size: 16px;
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1001;
+            display: none;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        /* Responsive Sidebar */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+                left: -280px;
+            }
+            
+            .hamburger-menu {
+                left: 15px;
+            }
         }
     </style>
     <script type="module" src="js/dashboardGuard.js"></script>
 </head>
 <body>
+    <!-- Sidebar Overlay -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>القائمة</h3>
+            <button class="close-btn" onclick="closeSidebar()">&times;</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="#" onclick="scrollToSection('welcomeSection'); closeSidebar();">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>لوحة التحكم</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="scrollToSection('assignmentsContainer'); closeSidebar();">
+                    <i class="fas fa-tasks"></i>
+                    <span>الواجبات</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="scrollToSection('gradesContainer'); closeSidebar();">
+                    <i class="fas fa-chart-line"></i>
+                    <span>الدرجات</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="scrollToSection('weeklySchedule'); closeSidebar();">
+                    <i class="fas fa-calendar-week"></i>
+                    <span>الجدول الأسبوعي</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="scrollToSection('studentClass'); closeSidebar();">
+                    <i class="fas fa-school"></i>
+                    <span>معلومات الفصل</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="logoutUser(); closeSidebar();">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل خروج</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    
     <nav class="navbar">
+        <!-- Hamburger Menu Icon -->
+        <div class="hamburger-menu" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        
         <div class="navbar-brand">
             <i class="fas fa-user-graduate"></i>
             <div>
@@ -564,10 +1007,6 @@
                 <h3 id="userName">الطالب</h3>
                 <p id="studentCode">الرقم: -</p>
             </div>
-            <button class="logout-btn" onclick="logoutUser()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>خروج</span>
-            </button>
         </div>
     </nav>
 
@@ -640,6 +1079,28 @@
 
         <div class="section-title">
             <div class="title-content">
+                <i class="fas fa-calendar-week"></i>
+                <span>الجدول الأسبوعي</span>
+            </div>
+            <button class="view-all-btn">عرض الكل ←</button>
+        </div>
+
+        <div class="schedule-section">
+            <div class="schedule-header">
+                <h3>الجدول الدراسي الأسبوعي</h3>
+            </div>
+            
+            <div class="schedule-container">
+                <div class="week-schedule" id="weeklySchedule">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">
+            <div class="title-content">
                 <i class="fas fa-tasks"></i>
                 <span>الواجبات القادمة</span>
             </div>
@@ -681,6 +1142,248 @@
             </div>
         </div>
     </div>
+
+    <!-- View Assignment Modal -->
+    <div id="viewAssignmentModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">تفاصيل الواجب</h3>
+                <button class="close-btn" onclick="closeModal('viewAssignmentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="assignmentDetailsContent">
+                    <div class="form-group">
+                        <label for="assignmentTitle">عنوان الواجب</label>
+                        <input type="text" id="assignmentTitle" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentSubject">المادة</label>
+                        <input type="text" id="assignmentSubject" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentTeacher">المعلم</label>
+                        <input type="text" id="assignmentTeacher" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDescription">الوصف</label>
+                        <textarea id="assignmentDescription" class="form-control" rows="4" readonly></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDueDate">موعد التسليم</label>
+                        <input type="text" id="assignmentDueDate" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentMaxScore">الدرجة العظمى</label>
+                        <input type="text" id="assignmentMaxScore" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewAssignmentModal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Grade Modal -->
+    <div id="viewGradeModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">تفاصيل الدرجة</h3>
+                <button class="close-btn" onclick="closeModal('viewGradeModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="gradeDetailsContent">
+                    <div class="form-group">
+                        <label for="gradeSubject">المادة</label>
+                        <input type="text" id="gradeSubject" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradeType">نوع التقييم</label>
+                        <input type="text" id="gradeType" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradeScore">الدرجة</label>
+                        <input type="text" id="gradeScore" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradeMaxScore">الدرجة العظمى</label>
+                        <input type="text" id="gradeMaxScore" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradePercentage">النسبة المئوية</label>
+                        <input type="text" id="gradePercentage" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradeTeacher">المعلم</label>
+                        <input type="text" id="gradeTeacher" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradeDate">تاريخ التقييم</label>
+                        <input type="text" id="gradeDate" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="gradeNotes">ملاحظات</label>
+                        <textarea id="gradeNotes" class="form-control" rows="3" readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('viewGradeModal')">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Styles -->
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            animation: slideIn 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+        
+        .modal-body {
+            padding: 25px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            border-radius: 0 0 15px 15px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
 
     <script type="module" src="js/student.js"></script>
 </body>

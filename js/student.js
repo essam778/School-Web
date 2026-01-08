@@ -6,6 +6,8 @@ import {
     getDoc,
     getDocs,
     query,
+
+    
     where,
     orderBy,
     limit
@@ -38,7 +40,8 @@ async function init() {
         await Promise.all([
             loadStatistics(),
             loadAssignments(),
-            loadGrades()
+            loadGrades(),
+            loadWeeklySchedule()
         ]);
 
     } catch (error) {
@@ -183,8 +186,23 @@ async function loadStatistics() {
         
         // Sort grades by createdAt to get most recent for GPA calculation
         const sortedGrades = gradesSnap.docs.sort((a, b) => {
-            const dateA = a.data().createdAt?.toDate ? a.data().createdAt.toDate() : new Date(0);
-            const dateB = b.data().createdAt?.toDate ? b.data().createdAt.toDate() : new Date(0);
+            const aData = a.data();
+            const bData = b.data();
+            
+            let dateA, dateB;
+            
+            if (aData.createdAt && typeof aData.createdAt.toDate === 'function') {
+                dateA = aData.createdAt.toDate();
+            } else {
+                dateA = new Date(0);
+            }
+            
+            if (bData.createdAt && typeof bData.createdAt.toDate === 'function') {
+                dateB = bData.createdAt.toDate();
+            } else {
+                dateB = new Date(0);
+            }
+            
             return dateB - dateA; // Descending order
         });
         
@@ -337,8 +355,23 @@ async function loadGrades() {
 
         // Sort documents by createdAt in descending order
         const sortedDocs = snapshot.docs.sort((a, b) => {
-            const dateA = a.data().createdAt?.toDate ? a.data().createdAt.toDate() : new Date(0);
-            const dateB = b.data().createdAt?.toDate ? b.data().createdAt.toDate() : new Date(0);
+            const aData = a.data();
+            const bData = b.data();
+            
+            let dateA, dateB;
+            
+            if (aData.createdAt && typeof aData.createdAt.toDate === 'function') {
+                dateA = aData.createdAt.toDate();
+            } else {
+                dateA = new Date(0);
+            }
+            
+            if (bData.createdAt && typeof bData.createdAt.toDate === 'function') {
+                dateB = bData.createdAt.toDate();
+            } else {
+                dateB = new Date(0);
+            }
+            
             return dateB - dateA; // Descending order (newest first)
         });
 
@@ -386,7 +419,8 @@ async function loadGrades() {
                 'quiz': 'اختبار قصير'
             };
 
-            html += `<tr>
+            const gradeId = doc.id; // Get the document ID
+            html += `<tr onclick="viewGrade('${gradeId}')" style="cursor: pointer;">
                 <td><strong>${grade.subjectName || '-'}</strong></td>
                 <td>${typeMap[grade.type] || grade.type || '-'}</td>
                 <td>${grade.score || 0}</td>
@@ -402,6 +436,116 @@ async function loadGrades() {
     } catch (error) {
         FirebaseHelpers.logError('Load Grades', error);
         container.innerHTML = createErrorState('فشل في تحميل الدرجات');
+    }
+}
+
+// ===== LOAD WEEKLY SCHEDULE =====
+async function loadWeeklySchedule() {
+    const container = document.getElementById('weeklySchedule');
+    
+    try {
+        if (!studentData || !studentData.classId) {
+            container.innerHTML = createEmptyState(
+                'لا يوجد جدول',
+                'لم يتم تعيين جدول دراسي بعد',
+                'fas fa-calendar-week'
+            );
+            return;
+        }
+
+        // Query schedule by classId
+        const scheduleQuery = query(
+            collection(db, 'schedule'),
+            where('classId', '==', studentData.classId)
+        );
+        
+        const scheduleSnapshot = await getDocs(scheduleQuery);
+
+        if (scheduleSnapshot.empty) {
+            container.innerHTML = createEmptyState(
+                'لا يوجد جدول',
+                'لم يتم إنشاء جدول دراسي لهذا الفصل بعد',
+                'fas fa-calendar-times'
+            );
+            return;
+        }
+
+        // Days of the week in Arabic (excluding Friday and Saturday as holidays)
+        const daysOfWeek = [
+            { name: 'الأحد', id: 'sunday' },
+            { name: 'الاثنين', id: 'monday' },
+            { name: 'الثلاثاء', id: 'tuesday' },
+            { name: 'الأربعاء', id: 'wednesday' },
+            { name: 'الخميس', id: 'thursday' }
+        ];
+
+        // Organize sessions by day
+        const scheduleByDay = {};
+        scheduleSnapshot.forEach(doc => {
+            const session = doc.data();
+            const day = session.day.toLowerCase();
+            
+            // Skip Friday and Saturday (holidays)
+            if (day === 'friday' || day === 'saturday') {
+                return;
+            }
+            
+            if (!scheduleByDay[day]) {
+                scheduleByDay[day] = [];
+            }
+            
+            scheduleByDay[day].push(session);
+        });
+
+        // Sort sessions by time within each day
+        Object.keys(scheduleByDay).forEach(day => {
+            scheduleByDay[day].sort((a, b) => {
+                // Simple time comparison - assuming HH:MM format
+                return a.startTime.localeCompare(b.startTime);
+            });
+        });
+
+        // Build HTML for each day
+        let html = '<div class="week-schedule">';
+        
+        daysOfWeek.forEach(day => {
+            const daySessions = scheduleByDay[day.id] || [];
+            
+            html += `<div class="day-row">
+                <div class="day-name">${day.name}</div>
+                <div class="day-sessions">`;
+            
+            if (daySessions.length === 0) {
+                html += `<div class="empty-session">
+                    <small>لا توجد حصص</small>
+                </div>`;
+            } else {
+                daySessions.forEach(session => {
+                    // Determine session type based on time
+                    let sessionType = 'morning';
+                    if (session.startTime) {
+                        const hour = parseInt(session.startTime.split(':')[0]);
+                        if (hour >= 12 && hour < 17) sessionType = 'afternoon';
+                        else if (hour >= 17) sessionType = 'evening';
+                    }
+                    
+                    html += `<div class="session-card ${sessionType}">
+                        <div class="session-time">${session.startTime || ''} - ${session.endTime || ''}</div>
+                        <div class="session-subject">${session.subject || 'غير محدد'}</div>
+                        <div class="session-teacher">${session.teacherName || 'غير محدد'}</div>
+                    </div>`;
+                });
+            }
+            
+            html += '</div></div>';
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+
+    } catch (error) {
+        FirebaseHelpers.logError('Load Weekly Schedule', error);
+        container.innerHTML = createErrorState('فشل في تحميل الجدول الأسبوعي');
     }
 }
 
@@ -466,19 +610,121 @@ window.viewAssignment = async function(assignmentId) {
             day: 'numeric'
         });
         
-        const info = `
-عنوان الواجب: ${assignment.title}
-المادة: ${assignment.subject || '-'}
-المعلم: ${assignment.teacherName || '-'}
-الوصف: ${assignment.description || 'لا يوجد'}
-التسليم: ${formattedDate}
-الدرجة العظمى: ${assignment.maxScore || 0}
-        `;
+        // Fill modal with assignment details
+        document.getElementById('assignmentTitle').value = assignment.title || '-';
+        document.getElementById('assignmentSubject').value = assignment.subject || '-';
+        document.getElementById('assignmentTeacher').value = assignment.teacherName || '-';
+        document.getElementById('assignmentDescription').value = assignment.description || 'لا يوجد';
+        document.getElementById('assignmentDueDate').value = formattedDate;
+        document.getElementById('assignmentMaxScore').value = assignment.maxScore || 0;
         
-        alert(info);
+        // Show the modal
+        document.getElementById('viewAssignmentModal').style.display = 'block';
+        
     } catch (error) {
         FirebaseHelpers.logError('View Assignment', error);
         FirebaseHelpers.showToast('فشل عرض الواجب', 'error');
+    }
+};
+
+window.viewGrade = async function(gradeId) {
+    try {
+        const gradeDoc = await getDoc(doc(db, 'grades', gradeId));
+        if (!gradeDoc.exists()) {
+            FirebaseHelpers.showToast('لم يتم العثور على الدرجة', 'error');
+            return;
+        }
+        
+        const grade = gradeDoc.data();
+        
+        // Format the date
+        let formattedDate = 'غير محدد';
+        if (grade.createdAt && typeof grade.createdAt.toDate === 'function') {
+            const date = grade.createdAt.toDate();
+            formattedDate = date.toLocaleDateString('ar-EG', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        // Calculate percentage
+        const percentage = grade.maxScore > 0 
+            ? ((grade.score / grade.maxScore) * 100).toFixed(1) 
+            : 0;
+        
+        // Map grade types
+        const typeMap = {
+            'assignment': 'واجب',
+            'exam': 'امتحان',
+            'quiz': 'اختبار قصير',
+            'project': 'مشروع',
+            'participation': 'مشاركة'
+        };
+        
+        // Fill modal with grade details
+        document.getElementById('gradeSubject').value = grade.subjectName || '-';
+        document.getElementById('gradeType').value = typeMap[grade.type] || grade.type || '-';
+        document.getElementById('gradeScore').value = grade.score || 0;
+        document.getElementById('gradeMaxScore').value = grade.maxScore || 0;
+        document.getElementById('gradePercentage').value = `${percentage}%`;
+        document.getElementById('gradeTeacher').value = grade.teacherName || '-';
+        document.getElementById('gradeDate').value = formattedDate;
+        document.getElementById('gradeNotes').value = grade.notes || 'لا توجد ملاحظات';
+        
+        // Show the modal
+        document.getElementById('viewGradeModal').style.display = 'block';
+        
+    } catch (error) {
+        FirebaseHelpers.logError('View Grade', error);
+        FirebaseHelpers.showToast('فشل عرض التفاصيل', 'error');
+    }
+};
+
+// ===== MODAL MANAGEMENT =====
+window.closeModal = function(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+};
+
+// ===== SIDEBAR NAVIGATION =====
+
+// Toggle sidebar
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Prevent body scroll when sidebar is open
+    if (sidebar.classList.contains('active')) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+};
+
+// Close sidebar
+window.closeSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+};
+
+// Scroll to section
+window.scrollToSection = function(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
     }
 };
 
