@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="لوحة تحكم المدرس لنظام إدارة المدرسة - إدارة الفصول والطلاب والدرجات والجدول الأسبوعي">
     <title>لوحة تحكم المدرس - نظام إدارة المدرسة</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -902,6 +903,8 @@
     <script type="module" src="js/dashboardGuard.js"></script>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <!-- Sidebar Overlay -->
     <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
     
@@ -969,9 +972,9 @@
         </ul>
     </div>
     
-    <nav class="navbar">
+    <nav class="navbar" role="navigation" aria-label="القائمة الرئيسية">
         <!-- Hamburger Menu Icon -->
-        <div class="hamburger-menu" onclick="toggleSidebar()">
+        <div class="hamburger-menu" onclick="toggleSidebar()" role="button" tabindex="0" aria-label="فتح القائمة">
             <i class="fas fa-bars"></i>
         </div>
         
@@ -992,6 +995,7 @@
         </div>
     </nav>
 
+    <main class="main-content" id="main-content">
     <div class="container">
         <div class="welcome-section">
             <h2>مرحباً، <span id="welcomeName">أستاذ</span> 👨‍🏫</h2>
@@ -1126,6 +1130,7 @@
             </div>
         </div>
     </div>
+    </main>
 
     <!-- Subject Selection Modal -->
     <div id="subjectSelectionModal" class="modal">
@@ -1638,6 +1643,75 @@
         
         .container::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
+        }
+        
+        /* Performance and Accessibility Improvements */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #3498db;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        
+        .skip-link:focus {
+            top: 6px;
+        }
+        
+        /* Improve color contrast */
+        .stat-info h3 {
+            color: #2c3e50;
+        }
+        
+        .action-card h3 {
+            color: #2c3e50;
+        }
+        
+        .action-card p {
+            color: #5a6c7d;
+        }
+        
+        /* Ensure proper heading hierarchy */
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        /* Optimize animations */
+        .stat-card {
+            will-change: transform;
+        }
+        
+        .action-card {
+            will-change: transform;
+        }
+        
+        /* Ensure focus visibility */
+        button:focus,
+        .action-card:focus,
+        a:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+        
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            .stat-card,
+            .action-card,
+            .class-card {
+                transition: none;
+                animation: none;
+            }
+            
+            .stat-card:hover,
+            .action-card:hover,
+            .class-card:hover {
+                transform: none;
+            }
         }
     </style>
 

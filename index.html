@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="نظام إدارة مدرسي إلكتروني شامل لإدارة الطلاب والمعلمين والدروس والدرجات">
     <title>تسجيل الدخول - النظام المدرسي الإلكتروني</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -53,6 +54,63 @@
         @keyframes moveGrid {
             0% { transform: translate(0, 0); }
             100% { transform: translate(30px, 30px); }
+        }
+        
+        /* Performance and Accessibility Optimizations */
+        img, svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Optimize animations */
+        .info-icon {
+            will-change: transform;
+        }
+        
+        /* Ensure proper focus management */
+        button, input, select, a {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            transition: outline-color 0.2s ease;
+        }
+        
+        button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+        
+        /* Skip link for accessibility */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        
+        .skip-link:focus {
+            top: 6px;
+        }
+        
+        /* Reduce motion for users who prefer it */
+        @media (prefers-reduced-motion: reduce) {
+            .info-icon {
+                animation: none;
+                transition: none;
+            }
+            
+            body::after {
+                animation: none;
+            }
+            
+            .info-panel::before,
+            .info-panel::after {
+                animation: none;
+            }
         }
 
         .login-wrapper {
@@ -653,7 +711,9 @@
     </style>
 </head>
 <body>
-    <div class="login-wrapper">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <main class="main-content" id="main-content">
+    <div class="login-wrapper" role="main">
         <!-- Info Panel -->
         <div class="info-panel">
             <div class="info-content">
@@ -691,12 +751,12 @@
                 <p>أدخل بياناتك للوصول إلى حسابك</p>
             </div>
 
-            <form id="loginForm">
+            <form id="loginForm" novalidate>
                 <div class="form-group">
                     <label for="role">نوع الحساب</label>
                     <div class="input-wrapper">
-                        <select id="role" required aria-label="نوع الحساب">
-                            <option value="">اختر نوع الحساب...</option>
+                        <select id="role" required name="role">
+                            <option value="" disabled selected>اختر نوع الحساب...</option>
                             <option value="student">🎓 طالب</option>
                             <option value="teacher">👨‍🏫 معلم</option>
                             <option value="manager">📈 مدير مدرسة</option>
@@ -712,10 +772,10 @@
                         <input 
                             type="email" 
                             id="email" 
+                            name="email"
                             placeholder="example@school.com"
                             required
                             autocomplete="email"
-                            aria-label="البريد الإلكتروني"
                         >
                         <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
                     </div>
@@ -727,10 +787,10 @@
                         <input 
                             type="password" 
                             id="password" 
+                            name="password"
                             placeholder="••••••••"
                             required
                             autocomplete="current-password"
-                            aria-label="كلمة المرور"
                         >
                         <i class="fas fa-lock input-icon" aria-hidden="true"></i>
                         <i class="fas fa-eye password-toggle" id="togglePassword" role="button" tabindex="0" aria-label="إظهار كلمة المرور"></i>
@@ -739,13 +799,13 @@
 
                 <div class="remember-forgot">
                     <div class="remember-me">
-                        <input type="checkbox" id="rememberMe" aria-label="تذكرني">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
                         <label for="rememberMe">تذكرني</label>
                     </div>
-                    <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+                    <a href="#" class="forgot-link" aria-label="استعادة كلمة المرور">نسيت كلمة المرور؟</a>
                 </div>
 
-                <button type="submit" class="login-btn" id="loginBtn" aria-label="تسجيل الدخول">
+                <button type="submit" class="login-btn" id="loginBtn">
                     <span>تسجيل الدخول</span>
                     <i class="fas fa-arrow-left" aria-hidden="true"></i>
                 </button>
@@ -763,6 +823,7 @@
             </div>
         </div>
     </div>
+    </main>
     
     <script type="module" src="js/auth.js"></script>
 </body>
